@@ -45,6 +45,8 @@ include_directories(${PROJECT_SOURCE_DIR})
 add_executable(AuthDuck
     ${PROJECT_SOURCE_DIR}/usb_descriptors.c
     ${PROJECT_SOURCE_DIR}/main.cpp
+    ${PROJECT_SOURCE_DIR}/PicoKeyboard.cpp
+    ${PROJECT_SOURCE_DIR}/KeyboardLayout.cpp
 )
 
 pico_enable_stdio_usb(AuthDuck 0)
