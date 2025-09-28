@@ -6,6 +6,9 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(FAMILY rp2040)
+set(BOARD pico_sdk)
+
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
 
@@ -15,10 +18,10 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.2.0)
-set(toolchainVersion 14_2_Rel1)
-set(picotoolVersion 2.2.0)
-set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+    set(sdkVersion 2.2.0)
+    set(toolchainVersion 14_2_Rel1)
+    set(picotoolVersion 2.2.0)
+    set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
@@ -33,24 +36,27 @@ project(AuthDuck C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+set(PROJECT_SOURCE_DIR src)
+
 # Add executable. Default name is the project name, version 0.1
 
-if (TARGET tinyusb_device)
-    add_executable(AuthDuck
-            AuthDuck.c
-            )
+include_directories(${PROJECT_SOURCE_DIR})
 
-    # pull in common dependencies
-    target_link_libraries(AuthDuck pico_stdlib)
+add_executable(AuthDuck
+    ${PROJECT_SOURCE_DIR}/usb_descriptors.c
+    ${PROJECT_SOURCE_DIR}/main.cpp
+)
 
-    # enable usb output, disable uart output
-    pico_enable_stdio_usb(AuthDuck 1)
-    pico_enable_stdio_uart(AuthDuck 0)
+pico_enable_stdio_usb(AuthDuck 0)
+pico_enable_stdio_uart(AuthDuck 1)
 
-    # create map/bin/hex/uf2 file etc.
-    pico_add_extra_outputs(AuthDuck)
+# pull in common dependencies
+target_link_libraries(AuthDuck
+    pico_stdlib
+    tinyusb_common
+    tinyusb_bsp
+    tinyusb_device_base
+)
 
-    # add url via pico_set_program_url
-elseif(PICO_ON_DEVICE)
-    message("Skipping AuthDuck because TinyUSB submodule is not initialized in the SDK")
-endif()
+# create map/bin/hex/uf2 file etc.
+pico_add_extra_outputs(AuthDuck)

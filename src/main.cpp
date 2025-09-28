@@ -1,6 +1,11 @@
+#include <pico/stdlib.h>
 #include <stdio.h>
-#include "pico/stdlib.h"
+#include <stdlib.h>
+#include <string.h>
+#include <bsp/rp2040/board.h>
+#include <tusb.h>
 
+#include "usb_descriptors.h"
 
 int main()
 {
