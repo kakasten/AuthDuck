@@ -37,6 +37,8 @@ void PicoKeyboard::send_char(char c) {
 
     tud_hid_keyboard_report(REPORT_ID_KEYBOARD, modifier, keycode);
 
+    while (!tud_hid_ready()) task();
+
     pending_release = true;
 }
 
