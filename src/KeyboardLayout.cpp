@@ -43,6 +43,10 @@ static inline KeyInfo universal_map(char c) {
         info.keycode = HID_KEY_SPACE;
     } else if (c == '\n') {
         info.keycode = HID_KEY_ENTER;
+    } else if (c == '\t') {
+        info.keycode = HID_KEY_TAB;
+    } else if (c == '~') {
+        info.keycode = HID_KEY_GUI_LEFT;
     }
 
     return info;
